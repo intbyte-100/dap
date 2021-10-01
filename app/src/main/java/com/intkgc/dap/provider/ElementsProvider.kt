@@ -4,5 +4,5 @@ import com.intkgc.dap.page.Element
 
 interface ElementsProvider {
     fun parse(pageMarkdown: String)
-    val elementsList: List<Element>
+    val elementsList: MutableList<Element>
 }
