@@ -29,11 +29,8 @@ class DocsPageFragment : Fragment(), PageBuilder {
         style.forEach {
             when(it){
                 TextStyle.BOLD -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
-                TextStyle.ITALIC -> textView.setTypeface(Typeface.DEFAULT,
-                    if(textView.typeface.isBold)
-                        Typeface.BOLD_ITALIC
-                    else
-                        Typeface.ITALIC)
+                TextStyle.ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.ITALIC)
+                TextStyle.BOLD_ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC)
                 TextStyle.NORMAL -> textView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 TextStyle.SMALL -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12.5f)
                 TextStyle.MEDIUM -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17.5f)
