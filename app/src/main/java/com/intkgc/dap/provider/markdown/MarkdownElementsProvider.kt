@@ -1,6 +1,7 @@
-package com.intkgc.dap.provider
+package com.intkgc.dap.provider.markdown
 
 import com.intkgc.dap.page.Element
+import com.intkgc.dap.provider.ElementsProvider
 import org.commonmark.node.Node
 import org.commonmark.parser.Parser
 
