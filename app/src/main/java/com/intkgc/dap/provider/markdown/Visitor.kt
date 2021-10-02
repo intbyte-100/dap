@@ -10,18 +10,26 @@ class Visitor : AbstractVisitor() {
 
     val elementsList: ArrayList<Element> = ArrayList()
 
+    override fun visit(emphasis: Emphasis) {
+        when (emphasis.openingDelimiter) {
+            "_", "*" -> {
+                if (emphasis.firstChild is org.commonmark.node.Text) {
+                    val text = emphasis.firstChild as org.commonmark.node.Text
+                    elementsList.add(Text(text.literal, TextStyle.ITALIC))
+                }
+            }
+        }
+        super.visit(emphasis)
+    }
+
     override fun visit(emphasis: StrongEmphasis) {
         val text = emphasis.firstChild as org.commonmark.node.Text
         when (emphasis.openingDelimiter) {
-            "__" -> {
-                elementsList.add(
-                        Text(text.literal, TextStyle.ITALIC)
-                )
-            }
-            "**" -> {
-                elementsList.add(
-                        Text(text.literal, TextStyle.BOLD)
-                )
+            "**", "__" -> {
+                if (emphasis.parent is Emphasis && (emphasis.parent as Emphasis).openingDelimiter == "*")
+                    elementsList.add(Text(text.literal, TextStyle.BOLD_ITALIC))
+                else
+                    elementsList.add(Text(text.literal, TextStyle.BOLD))
             }
         }
         visitChildren(emphasis)
