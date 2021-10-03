@@ -50,7 +50,7 @@ class RepositoryResourceSpace(context: Context, name: String) {
 
         if (image == null)
             image = BitmapFactory.decodeFile("$resourceDirectory/$hashCode.png")
-        
+
         images[hashCode] = image!!
         return image
     }
