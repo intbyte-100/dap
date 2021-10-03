@@ -59,11 +59,16 @@ class Visitor : AbstractVisitor() {
 
     override fun visit(code: Code) {
         elementsList += CodePanel(code.literal)
-        super.visit(code)
+        visitChildren(code)
     }
 
     override fun visit(fencedCodeBlock: FencedCodeBlock) {
         elementsList += CodePanel(fencedCodeBlock.literal, fencedCodeBlock.info)
-        super.visit(fencedCodeBlock)
+        visitChildren(fencedCodeBlock)
+    }
+
+    override fun visit(image: Image) {
+        elementsList.add(com.intkgc.dap.page.Image(image.destination))
+        visitChildren(image)
     }
 }
