@@ -15,7 +15,7 @@ import com.intkgc.dap.R
 import com.intkgc.dap.page.PageBuilder
 import com.intkgc.dap.page.TextStyle
 import com.intkgc.dap.provider.ElementsProvider
-import com.intkgc.dap.provider.TestElementsProvider
+import com.intkgc.dap.provider.markdown.MarkdownElementsProvider
 import com.intkgc.dap.util.Dp
 import com.intkgc.dap.util.updateContext
 
@@ -35,7 +35,7 @@ class DocsPageFragment : Fragment(), PageBuilder {
         textView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
 
         style.forEach {
-            when(it){
+            when (it) {
 
                 TextStyle.BOLD -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
                 TextStyle.ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.ITALIC)
@@ -58,8 +58,19 @@ class DocsPageFragment : Fragment(), PageBuilder {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.docs_fragment, null)
         layout = view.findViewById(R.id.docs_fragment_linear_layout)
-        elementsProvider = TestElementsProvider()
-
+        elementsProvider = MarkdownElementsProvider()
+        elementsProvider.parse(
+                "" +
+                        "# Header\n\n" +
+                        "**BOLD**\n" +
+                        "it really works\n" +
+                        "**lol**\n" +
+                        "_italic1_\n" +
+                        "_italic2_\n" +
+                        "_italic3_\n" +
+                        "_italic4_\n" +
+                        "***BOLD ITALIC***"
+        )
         layout.gravity = Gravity.CENTER
 
         elementsProvider.elementsList.forEach {
