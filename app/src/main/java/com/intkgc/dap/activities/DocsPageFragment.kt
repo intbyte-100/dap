@@ -1,7 +1,9 @@
 package com.intkgc.dap.activities
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -12,6 +14,7 @@ import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.intkgc.dap.R
 import com.intkgc.dap.page.PageBuilder
@@ -73,6 +76,7 @@ class DocsPageFragment : Fragment(), PageBuilder {
 
     }
 
+
     override fun addCodePanel(code: String, language: String) {
         val textView = TextView(context)
         val scrollView = HorizontalScrollView(context)
@@ -81,6 +85,9 @@ class DocsPageFragment : Fragment(), PageBuilder {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14.5f)
         textView.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL)
         scrollView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+        scrollView.isHorizontalScrollBarEnabled = true
+        scrollView.scrollBarSize = Dp(7).px.property
+        scrollView.overScrollMode = 2
         scrollView.addView(textView)
         layout.addView(scrollView)
         textView.text = code
@@ -93,7 +100,6 @@ class DocsPageFragment : Fragment(), PageBuilder {
         elementsProvider = MarkdownElementsProvider()
 
         elementsProvider.parse(markdown)
-
         layout.gravity = Gravity.CENTER
 
         elementsProvider.elementsList.forEach {
