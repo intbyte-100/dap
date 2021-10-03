@@ -24,8 +24,14 @@ import com.intkgc.dap.provider.markdown.MarkdownElementsProvider
 import com.intkgc.dap.util.Dp
 import com.intkgc.dap.util.updateContext
 
-const val markdown = """# Header
-
+const val markdown = """
+HeAdEr
+======
+## что
+### это
+#### такое
+##### лол 5
+###### шестая струна
 **bold**
 it really works
 **lol**

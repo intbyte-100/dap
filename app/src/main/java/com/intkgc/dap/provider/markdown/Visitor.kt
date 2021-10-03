@@ -25,17 +25,29 @@ class Visitor : AbstractVisitor() {
         val text = emphasis.firstChild as org.commonmark.node.Text
         when (emphasis.openingDelimiter) {
             "**", "__" -> elementsList +=
-                    if (emphasis.parent is Emphasis && (emphasis.parent as Emphasis).openingDelimiter == "*")
-                        Text(text.literal, TextStyle.BOLD_ITALIC, TextStyle.SMALL)
-                    else
-                        Text(text.literal, TextStyle.BOLD, TextStyle.SMALL)
+                if (emphasis.parent is Emphasis && (emphasis.parent as Emphasis).openingDelimiter == "*")
+                    Text(text.literal, TextStyle.BOLD_ITALIC, TextStyle.SMALL)
+                else
+                    Text(text.literal, TextStyle.BOLD, TextStyle.SMALL)
         }
         visitChildren(emphasis)
     }
 
     override fun visit(heading: Heading) {
         val text = heading.firstChild as org.commonmark.node.Text
-        elementsList += Text(text.literal, TextStyle.HUGE_HEADER, TextStyle.BOLD)
+
+        var size: TextStyle = TextStyle.HUGE_HEADER
+
+        when (heading.level) {
+            1 -> size = TextStyle.HUGE_HEADER
+            2 -> size = TextStyle.MEDIUM_HEADER
+            3 -> size = TextStyle.SMALL_HEADER
+            4 -> size = TextStyle.HUGE
+            5 -> size = TextStyle.MEDIUM
+            6 -> size = TextStyle.SMALL
+        }
+
+        elementsList += Text(text.literal, size, TextStyle.BOLD)
         visitChildren(heading)
     }
 
@@ -47,11 +59,16 @@ class Visitor : AbstractVisitor() {
 
     override fun visit(code: Code) {
         elementsList += CodePanel(code.literal)
-        super.visit(code)
+        visitChildren(code)
     }
 
     override fun visit(fencedCodeBlock: FencedCodeBlock) {
         elementsList += CodePanel(fencedCodeBlock.literal, fencedCodeBlock.info)
-        super.visit(fencedCodeBlock)
+        visitChildren(fencedCodeBlock)
+    }
+
+    override fun visit(image: Image) {
+        elementsList.add(com.intkgc.dap.page.Image(image.destination))
+        visitChildren(image)
     }
 }
