@@ -19,6 +19,14 @@ import com.intkgc.dap.provider.markdown.MarkdownElementsProvider
 import com.intkgc.dap.util.Dp
 import com.intkgc.dap.util.updateContext
 
+const val markdown = """# Header
+
+**bold**
+it really works
+**lol**
+_italic_
+
+***BOLD ITALIC***"""
 class DocsPageFragment : Fragment(), PageBuilder {
     private lateinit var layout: LinearLayout
     lateinit var elementsProvider: ElementsProvider
@@ -41,9 +49,9 @@ class DocsPageFragment : Fragment(), PageBuilder {
                 TextStyle.ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.ITALIC)
                 TextStyle.BOLD_ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC)
                 TextStyle.NORMAL -> textView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
-                TextStyle.SMALL -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12.5f)
-                TextStyle.MEDIUM -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17.5f)
-                TextStyle.HUGE -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 26.5f)
+                TextStyle.SMALL -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.5f)
+                TextStyle.MEDIUM -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 19.5f)
+                TextStyle.HUGE -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22.5f)
             }
         }
 
@@ -59,18 +67,9 @@ class DocsPageFragment : Fragment(), PageBuilder {
         val view = inflater.inflate(R.layout.docs_fragment, null)
         layout = view.findViewById(R.id.docs_fragment_linear_layout)
         elementsProvider = MarkdownElementsProvider()
-        elementsProvider.parse(
-                "" +
-                        "# Header\n\n" +
-                        "**BOLD**\n" +
-                        "it really works\n" +
-                        "**lol**\n" +
-                        "_italic1_\n" +
-                        "_italic2_\n" +
-                        "_italic3_\n" +
-                        "_italic4_\n" +
-                        "***BOLD ITALIC***"
-        )
+
+        elementsProvider.parse(markdown)
+
         layout.gravity = Gravity.CENTER
 
         elementsProvider.elementsList.forEach {

@@ -7,5 +7,8 @@ enum class TextStyle {
     NORMAL,
     SMALL,
     MEDIUM,
-    HUGE
+    HUGE,
+    SMALL_HEADER,
+    MEDIUM_HEADER,
+    HUGE_HEADER
 }

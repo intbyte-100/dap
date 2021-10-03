@@ -12,12 +12,11 @@ class Visitor : AbstractVisitor() {
 
     override fun visit(emphasis: Emphasis) {
         when (emphasis.openingDelimiter) {
-            "_", "*" -> {
+            "_", "*" ->
                 if (emphasis.firstChild is org.commonmark.node.Text) {
                     val text = emphasis.firstChild as org.commonmark.node.Text
-                    elementsList.add(Text(text.literal, TextStyle.ITALIC))
+                    elementsList += Text(text.literal, TextStyle.ITALIC, TextStyle.SMALL)
                 }
-            }
         }
         super.visit(emphasis)
     }
@@ -25,40 +24,34 @@ class Visitor : AbstractVisitor() {
     override fun visit(emphasis: StrongEmphasis) {
         val text = emphasis.firstChild as org.commonmark.node.Text
         when (emphasis.openingDelimiter) {
-            "**", "__" -> {
-                if (emphasis.parent is Emphasis && (emphasis.parent as Emphasis).openingDelimiter == "*")
-                    elementsList.add(Text(text.literal, TextStyle.BOLD_ITALIC))
-                else
-                    elementsList.add(Text(text.literal, TextStyle.BOLD))
-            }
+            "**", "__" -> elementsList +=
+                    if (emphasis.parent is Emphasis && (emphasis.parent as Emphasis).openingDelimiter == "*")
+                        Text(text.literal, TextStyle.BOLD_ITALIC, TextStyle.SMALL)
+                    else
+                        Text(text.literal, TextStyle.BOLD, TextStyle.SMALL)
         }
         visitChildren(emphasis)
     }
 
     override fun visit(heading: Heading) {
         val text = heading.firstChild as org.commonmark.node.Text
-        elementsList.add(
-                Text(text.literal, TextStyle.HUGE, TextStyle.BOLD)
-        )
+        elementsList += Text(text.literal, TextStyle.MEDIUM, TextStyle.BOLD)
         visitChildren(heading)
     }
 
     override fun visit(text: org.commonmark.node.Text) {
-        if (text.parent is Paragraph) {
-            elementsList.add(
-                    Text(text.literal)
-            )
-        }
+        if (text.parent is Paragraph)
+            elementsList += Text(text.literal)
         visitChildren(text)
     }
 
     override fun visit(code: Code) {
-        elementsList.add(CodePanel(code.literal))
+        elementsList += CodePanel(code.literal)
         super.visit(code)
     }
 
     override fun visit(fencedCodeBlock: FencedCodeBlock) {
-        elementsList.add(CodePanel(fencedCodeBlock.literal, fencedCodeBlock.info))
+        elementsList += CodePanel(fencedCodeBlock.literal, fencedCodeBlock.info)
         super.visit(fencedCodeBlock)
     }
 }
