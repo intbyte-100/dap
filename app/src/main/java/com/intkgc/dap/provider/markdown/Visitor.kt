@@ -35,7 +35,7 @@ class Visitor : AbstractVisitor() {
 
     override fun visit(heading: Heading) {
         val text = heading.firstChild as org.commonmark.node.Text
-        elementsList += Text(text.literal, TextStyle.MEDIUM, TextStyle.BOLD)
+        elementsList += Text(text.literal, TextStyle.HUGE_HEADER, TextStyle.BOLD)
         visitChildren(heading)
     }
 

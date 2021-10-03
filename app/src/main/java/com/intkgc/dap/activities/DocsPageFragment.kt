@@ -8,7 +8,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.intkgc.dap.R
@@ -25,7 +27,18 @@ const val markdown = """# Header
 it really works
 **lol**
 _italic_
-
+```
+public class MyGameActivity extends AndroidApplication {
+   @Override
+   public void onCreate (Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+      config.useAccelerometer = false;
+      config.useCompass = false;
+      initialize(new MyGame(), config);
+   }
+}
+```
 ***BOLD ITALIC***"""
 class DocsPageFragment : Fragment(), PageBuilder {
     private lateinit var layout: LinearLayout
@@ -61,7 +74,16 @@ class DocsPageFragment : Fragment(), PageBuilder {
     }
 
     override fun addCodePanel(code: String, language: String) {
-        TODO("Not yet implemented")
+        val textView = TextView(context)
+        val scrollView = HorizontalScrollView(context)
+        val horizontalPadding = Dp(17).px.property
+        val verticalPadding = Dp(20).px.property
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14.5f)
+        textView.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL)
+        scrollView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+        scrollView.addView(textView)
+        layout.addView(scrollView)
+        textView.text = code
     }
 
     @SuppressLint("InflateParams")
