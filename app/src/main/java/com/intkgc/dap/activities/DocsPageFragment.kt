@@ -1,9 +1,7 @@
 package com.intkgc.dap.activities
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -12,9 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.intkgc.dap.R
 import com.intkgc.dap.page.PageBuilder
@@ -25,30 +21,28 @@ import com.intkgc.dap.util.Dp
 import com.intkgc.dap.util.updateContext
 
 const val markdown = """
-HeAdEr
-======
-## что
-### это
-#### такое
-##### лол 5
-###### шестая струна
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+##### Header 5
+###### Header 6
+
+__bold__
 **bold**
-it really works
-**lol**
 _italic_
+*italic*
+
+***bold-italic***
+
+## Some code :
+
 ```
-public class MyGameActivity extends AndroidApplication {
-   @Override
-   public void onCreate (Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-      config.useAccelerometer = false;
-      config.useCompass = false;
-      initialize(new MyGame(), config);
-   }
-}
+print("Hello, World!");
 ```
-***BOLD ITALIC***"""
+
+"""
+
 class DocsPageFragment : Fragment(), PageBuilder {
     private lateinit var layout: LinearLayout
     lateinit var elementsProvider: ElementsProvider
@@ -68,7 +62,10 @@ class DocsPageFragment : Fragment(), PageBuilder {
             when (it) {
                 TextStyle.BOLD -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
                 TextStyle.ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.ITALIC)
-                TextStyle.BOLD_ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC)
+                TextStyle.BOLD_ITALIC -> textView.setTypeface(
+                    Typeface.DEFAULT,
+                    Typeface.BOLD_ITALIC
+                )
                 TextStyle.NORMAL -> textView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 TextStyle.SMALL -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.5f)
                 TextStyle.MEDIUM -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 19.5f)
@@ -90,7 +87,12 @@ class DocsPageFragment : Fragment(), PageBuilder {
         val verticalPadding = Dp(20).px.property
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14.5f)
         textView.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL)
-        scrollView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+        scrollView.setPadding(
+            horizontalPadding,
+            verticalPadding,
+            horizontalPadding,
+            verticalPadding
+        )
         scrollView.isHorizontalScrollBarEnabled = true
         scrollView.scrollBarSize = Dp(7).px.property
         scrollView.overScrollMode = 2
@@ -100,7 +102,11 @@ class DocsPageFragment : Fragment(), PageBuilder {
     }
 
     @SuppressLint("InflateParams")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.docs_fragment, null)
         layout = view.findViewById(R.id.docs_fragment_linear_layout)
         elementsProvider = MarkdownElementsProvider()
