@@ -1,20 +1,16 @@
 package com.intkgc.dap.activities
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
-import android.widget.LinearLayout
-import android.widget.ScrollView
+import android.widget.TableLayout
+import android.widget.TableRow
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.intkgc.dap.R
 import com.intkgc.dap.page.PageBuilder
@@ -25,16 +21,16 @@ import com.intkgc.dap.util.Dp
 import com.intkgc.dap.util.updateContext
 
 const val markdown = """
-HeAdEr
+Header 1
 ======
-## что
-### это
-#### такое
-##### лол 5
-###### шестая струна
+## Header 2
+### Header 3
+#### Header 4
+##### Header 5
+###### header 6
 **bold**
 it really works
-**lol**
+
 _italic_
 ```
 public class MyGameActivity extends AndroidApplication {
@@ -49,8 +45,10 @@ public class MyGameActivity extends AndroidApplication {
 }
 ```
 ***BOLD ITALIC***"""
+
 class DocsPageFragment : Fragment(), PageBuilder {
-    private lateinit var layout: LinearLayout
+    private lateinit var layout: TableRow
+    private lateinit var tableLayout: TableLayout
     lateinit var elementsProvider: ElementsProvider
 
 
@@ -73,13 +71,18 @@ class DocsPageFragment : Fragment(), PageBuilder {
                 TextStyle.SMALL -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.5f)
                 TextStyle.MEDIUM -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 19.5f)
                 TextStyle.HUGE -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22.5f)
-                TextStyle.SMALL_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22.5f)
+                TextStyle.SMALL_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 23.5f)
                 TextStyle.MEDIUM_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25.5f)
                 TextStyle.HUGE_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 28.5f)
             }
         }
 
+        textView.layoutParams = TableRow.LayoutParams().apply {
+            width = Dp(10).px.property
+            weight = 1f
+        }
 
+        textView.setTextIsSelectable(true)
     }
 
 
@@ -88,30 +91,42 @@ class DocsPageFragment : Fragment(), PageBuilder {
         val scrollView = HorizontalScrollView(context)
         val horizontalPadding = Dp(17).px.property
         val verticalPadding = Dp(20).px.property
+
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14.5f)
         textView.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL)
+        textView.text = code
+
         scrollView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
         scrollView.isHorizontalScrollBarEnabled = true
         scrollView.scrollBarSize = Dp(7).px.property
         scrollView.overScrollMode = 2
         scrollView.addView(textView)
-        layout.addView(scrollView)
-        textView.text = code
+        tableLayout.addView(scrollView)
+    }
+
+    override fun row() {
+        layout = TableRow(context)
+        tableLayout.addView(layout)
     }
 
     @SuppressLint("InflateParams")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.docs_fragment, null)
-        layout = view.findViewById(R.id.docs_fragment_linear_layout)
+        tableLayout = view.findViewById(R.id.docs_fragment_linear_layout)
         elementsProvider = MarkdownElementsProvider()
 
         elementsProvider.parse(markdown)
-        layout.gravity = Gravity.CENTER
+        row()
 
         elementsProvider.elementsList.forEach {
             it.inflate(this)
+            if (it.onNextRow)
+                row()
         }
-
         return view
     }
 }
