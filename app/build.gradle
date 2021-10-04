@@ -40,6 +40,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.fragment:fragment:1.3.6'
     implementation 'org.commonmark:commonmark:0.18.0'
+    implementation 'org.commonmark:commonmark-ext-task-list-items:0.18.0'
+    implementation 'org.commonmark:commonmark-ext-gfm-strikethrough:0.18.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -8,8 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
+
 import android.widget.TableLayout
 import android.widget.TableRow
+
+import android.widget.LinearLayout
+
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.intkgc.dap.R
@@ -21,30 +25,26 @@ import com.intkgc.dap.util.Dp
 import com.intkgc.dap.util.updateContext
 
 const val markdown = """
-Header 1
-======
+# Header 1
 ## Header 2
 ### Header 3
 #### Header 4
 ##### Header 5
-###### header 6
+###### Header 6
+text
+__bold__
 **bold**
-it really works
-
 _italic_
+*italic*
+***bold-italic***
+## Some code :
 ```
-public class MyGameActivity extends AndroidApplication {
-   @Override
-   public void onCreate (Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-      config.useAccelerometer = false;
-      config.useCompass = false;
-      initialize(new MyGame(), config);
-   }
-}
+print("Hello, World!");
 ```
-***BOLD ITALIC***"""
+- [x] *some TaskListItem*
+
+"""
+
 
 class DocsPageFragment : Fragment(), PageBuilder {
     private lateinit var layout: TableRow
@@ -66,7 +66,10 @@ class DocsPageFragment : Fragment(), PageBuilder {
             when (it) {
                 TextStyle.BOLD -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
                 TextStyle.ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.ITALIC)
-                TextStyle.BOLD_ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC)
+                TextStyle.BOLD_ITALIC -> textView.setTypeface(
+                    Typeface.DEFAULT,
+                    Typeface.BOLD_ITALIC
+                )
                 TextStyle.NORMAL -> textView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 TextStyle.SMALL -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.5f)
                 TextStyle.MEDIUM -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 19.5f)
@@ -94,9 +97,18 @@ class DocsPageFragment : Fragment(), PageBuilder {
 
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14.5f)
         textView.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL)
+
         textView.text = code
 
         scrollView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+
+        scrollView.setPadding(
+            horizontalPadding,
+            verticalPadding,
+            horizontalPadding,
+            verticalPadding
+        )
+
         scrollView.isHorizontalScrollBarEnabled = true
         scrollView.scrollBarSize = Dp(7).px.property
         scrollView.overScrollMode = 2

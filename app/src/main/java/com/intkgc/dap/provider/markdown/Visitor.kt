@@ -1,6 +1,7 @@
 package com.intkgc.dap.provider.markdown
 
 import com.intkgc.dap.page.*
+import org.commonmark.ext.task.list.items.TaskListItemMarker
 import org.commonmark.node.*
 import org.commonmark.node.Image as CommonmarkNodeImage
 import org.commonmark.node.Text as CommonmarkNodeText
@@ -18,7 +19,6 @@ class Visitor : AbstractVisitor() {
                     elementsList += Text(text.literal, TextStyle.ITALIC, TextStyle.SMALL)
                 }
         }
-        super.visit(emphasis)
     }
 
     override fun visit(emphasis: StrongEmphasis) {
@@ -30,7 +30,6 @@ class Visitor : AbstractVisitor() {
                 else
                     Text(text.literal, TextStyle.BOLD, TextStyle.SMALL)
         }
-        visitChildren(emphasis)
     }
 
     override fun visit(heading: Heading) {
@@ -47,27 +46,31 @@ class Visitor : AbstractVisitor() {
         }
 
         elementsList += Text(text.literal, size, TextStyle.BOLD)
-        visitChildren(heading)
     }
 
     override fun visit(text: CommonmarkNodeText) {
-        if (text.parent is Paragraph)
-            elementsList += Text(text.literal)
-        visitChildren(text)
+        elementsList += Text(text.literal)
     }
 
     override fun visit(code: Code) {
         elementsList += CodePanel(code.literal)
-        visitChildren(code)
     }
 
     override fun visit(fencedCodeBlock: FencedCodeBlock) {
         elementsList += CodePanel(fencedCodeBlock.literal, fencedCodeBlock.info)
-        visitChildren(fencedCodeBlock)
     }
 
     override fun visit(image: CommonmarkNodeImage) {
-        elementsList.add(Image(image.destination))
-        visitChildren(image)
+        elementsList += Image(image.destination)
+    }
+
+    override fun visit(softLineBreak: SoftLineBreak?) {
+        super.visit(softLineBreak)
+    }
+
+    // Used for debugging
+    override fun visitChildren(parent: Node?) {
+        println(parent)
+        super.visitChildren(parent)
     }
 }
