@@ -28,6 +28,8 @@ const val markdown = """
 ##### Header 5
 ###### Header 6
 
+text
+
 __bold__
 **bold**
 _italic_
@@ -40,6 +42,8 @@ _italic_
 ```
 print("Hello, World!");
 ```
+
+- [x] *some TaskListItem*
 
 """
 
