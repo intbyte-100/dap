@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.intkgc.dap.provider.ElementsProvider
 import android.graphics.BitmapFactory
+import com.intkgc.dap.provider.markdown.MarkdownElementsProvider
 import java.io.File
 
 
@@ -14,15 +15,17 @@ import java.net.URL
 class RepositoryResourceSpace(context: Context, name: String) {
     private val images = hashMapOf<Int, Bitmap>()
     private val pages = hashMapOf<String, ElementsProvider>()
-    private val resourceDirectory = File(context.filesDir, name)
+    private val resourceDirectory = File(context.filesDir, "rsp_$name")
 
     init {
         if(!resourceDirectory.exists())
             resourceDirectory.mkdir()
     }
 
-    fun savePage(markdown: String){
-        TODO("not yet implemented")
+    fun savePage(name: String, markdown: String){
+        val file = File(resourceDirectory, name)
+        file.createNewFile()
+        file.writeBytes(markdown.toByteArray())
     }
 
     fun saveImage(stringUrl: String){
@@ -41,7 +44,13 @@ class RepositoryResourceSpace(context: Context, name: String) {
     }
 
     fun getPage(path: String): ElementsProvider {
-        TODO("not yet implemented")
+        var page = pages[path]
+        if(page == null){
+            page = MarkdownElementsProvider()
+            page.parse(String(File(resourceDirectory, path).readBytes()))
+            pages[path] = page
+        }
+        return page
     }
 
     fun getImage(path: String): Bitmap {

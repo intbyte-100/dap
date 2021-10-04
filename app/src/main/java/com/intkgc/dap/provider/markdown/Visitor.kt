@@ -1,10 +1,10 @@
 package com.intkgc.dap.provider.markdown
 
-import com.intkgc.dap.page.CodePanel
-import com.intkgc.dap.page.Element
-import com.intkgc.dap.page.Text
-import com.intkgc.dap.page.TextStyle
+import com.intkgc.dap.page.*
 import org.commonmark.node.*
+import org.commonmark.node.Image as CommonmarkNodeImage
+import org.commonmark.node.Text as CommonmarkNodeText
+
 
 class Visitor : AbstractVisitor() {
 
@@ -13,8 +13,8 @@ class Visitor : AbstractVisitor() {
     override fun visit(emphasis: Emphasis) {
         when (emphasis.openingDelimiter) {
             "_", "*" ->
-                if (emphasis.firstChild is org.commonmark.node.Text) {
-                    val text = emphasis.firstChild as org.commonmark.node.Text
+                if (emphasis.firstChild is CommonmarkNodeText) {
+                    val text = emphasis.firstChild as CommonmarkNodeText
                     elementsList += Text(text.literal, TextStyle.ITALIC, TextStyle.SMALL)
                 }
         }
@@ -22,7 +22,7 @@ class Visitor : AbstractVisitor() {
     }
 
     override fun visit(emphasis: StrongEmphasis) {
-        val text = emphasis.firstChild as org.commonmark.node.Text
+        val text = emphasis.firstChild as CommonmarkNodeText
         when (emphasis.openingDelimiter) {
             "**", "__" -> elementsList +=
                 if (emphasis.parent is Emphasis && (emphasis.parent as Emphasis).openingDelimiter == "*")
@@ -34,7 +34,7 @@ class Visitor : AbstractVisitor() {
     }
 
     override fun visit(heading: Heading) {
-        val text = heading.firstChild as org.commonmark.node.Text
+        val text = heading.firstChild as CommonmarkNodeText
 
         val size = when (heading.level) {
             1 -> TextStyle.HUGE_HEADER
@@ -50,7 +50,7 @@ class Visitor : AbstractVisitor() {
         visitChildren(heading)
     }
 
-    override fun visit(text: org.commonmark.node.Text) {
+    override fun visit(text: CommonmarkNodeText) {
         if (text.parent is Paragraph)
             elementsList += Text(text.literal)
         visitChildren(text)
@@ -66,8 +66,8 @@ class Visitor : AbstractVisitor() {
         visitChildren(fencedCodeBlock)
     }
 
-    override fun visit(image: Image) {
-        elementsList.add(com.intkgc.dap.page.Image(image.destination))
+    override fun visit(image: CommonmarkNodeImage) {
+        elementsList.add(Image(image.destination))
         visitChildren(image)
     }
 }
