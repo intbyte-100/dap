@@ -1,6 +1,7 @@
 package com.intkgc.dap.provider.markdown
 
 import com.intkgc.dap.page.*
+import org.commonmark.ext.gfm.strikethrough.Strikethrough
 import org.commonmark.ext.task.list.items.TaskListItemMarker
 import org.commonmark.node.*
 import org.commonmark.node.Image as CommonmarkNodeImage
@@ -10,6 +11,21 @@ import org.commonmark.node.Text as CommonmarkNodeText
 class Visitor : AbstractVisitor() {
 
     val elementsList: ArrayList<Element> = ArrayList()
+
+    override fun visit(heading: Heading) {
+        val text = heading.firstChild as CommonmarkNodeText
+
+        val size = when (heading.level) {
+            1 -> TextStyle.HUGE_HEADER
+            2 -> TextStyle.MEDIUM_HEADER
+            3 -> TextStyle.SMALL_HEADER
+            4 -> TextStyle.HUGE
+            5 -> TextStyle.MEDIUM
+            6 -> TextStyle.SMALL
+            else -> throw IllegalArgumentException("Invalid header size")
+        }
+        elementsList += Text(text.literal, size, TextStyle.BOLD)
+    }
 
     override fun visit(emphasis: Emphasis) {
         when (emphasis.openingDelimiter) {
@@ -32,22 +48,6 @@ class Visitor : AbstractVisitor() {
         }
     }
 
-    override fun visit(heading: Heading) {
-        val text = heading.firstChild as CommonmarkNodeText
-
-        val size = when (heading.level) {
-            1 -> TextStyle.HUGE_HEADER
-            2 -> TextStyle.MEDIUM_HEADER
-            3 -> TextStyle.SMALL_HEADER
-            4 -> TextStyle.HUGE
-            5 -> TextStyle.MEDIUM
-            6 -> TextStyle.SMALL
-            else -> throw IllegalArgumentException("Invalid header size")
-        }
-
-        elementsList += Text(text.literal, size, TextStyle.BOLD)
-    }
-
     override fun visit(text: CommonmarkNodeText) {
         elementsList += Text(text.literal)
     }
@@ -66,6 +66,16 @@ class Visitor : AbstractVisitor() {
 
     override fun visit(softLineBreak: SoftLineBreak?) {
         super.visit(softLineBreak)
+    }
+
+    override fun visit(link: Link) {
+    }
+
+    override fun visit(customNode: CustomNode) {
+        if (customNode is Strikethrough) {
+            val text = customNode.firstChild as CommonmarkNodeText
+            elementsList += Text(text.literal, TextStyle.STRIKETHROUGH)
+        }
     }
 
     // Used for debugging

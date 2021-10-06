@@ -10,5 +10,6 @@ enum class TextStyle {
     HUGE,
     SMALL_HEADER,
     MEDIUM_HEADER,
-    HUGE_HEADER
+    HUGE_HEADER,
+    STRIKETHROUGH
 }

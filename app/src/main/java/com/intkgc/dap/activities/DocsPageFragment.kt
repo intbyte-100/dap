@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.intkgc.dap.R
 import com.intkgc.dap.page.PageBuilder
+import com.intkgc.dap.page.Text
 import com.intkgc.dap.page.TextStyle
 import com.intkgc.dap.provider.ElementsProvider
 import com.intkgc.dap.provider.markdown.MarkdownElementsProvider
@@ -77,6 +78,7 @@ class DocsPageFragment : Fragment(), PageBuilder {
                 TextStyle.SMALL_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 23.5f)
                 TextStyle.MEDIUM_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25.5f)
                 TextStyle.HUGE_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 28.5f)
+                TextStyle.STRIKETHROUGH -> TODO("add strikethrough support :moyai:")
             }
         }
 
