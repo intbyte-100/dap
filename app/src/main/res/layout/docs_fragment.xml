@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TableLayout
+    <LinearLayout
         android:id="@+id/docs_fragment_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="true"
         android:orientation="vertical">
-    </TableLayout>
+    </LinearLayout>
 
 </ScrollView>

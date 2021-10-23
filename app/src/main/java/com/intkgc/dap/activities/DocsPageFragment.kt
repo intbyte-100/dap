@@ -3,6 +3,8 @@ package com.intkgc.dap.activities
 import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import android.widget.TableRow
 import android.widget.LinearLayout
 
 import android.widget.TextView
+import androidx.core.text.getSpans
 import androidx.fragment.app.Fragment
 import com.intkgc.dap.R
 import com.intkgc.dap.page.PageBuilder
@@ -23,6 +26,8 @@ import com.intkgc.dap.page.TextStyle
 import com.intkgc.dap.provider.ElementsProvider
 import com.intkgc.dap.provider.markdown.MarkdownElementsProvider
 import com.intkgc.dap.util.Dp
+import com.intkgc.dap.util.StyledString
+import com.intkgc.dap.util.setStyle
 import com.intkgc.dap.util.updateContext
 
 const val markdown = """
@@ -48,46 +53,34 @@ print("Hello, World!");
 
 
 class DocsPageFragment : Fragment(), PageBuilder {
-    private lateinit var layout: TableRow
-    private lateinit var tableLayout: TableLayout
-    lateinit var elementsProvider: ElementsProvider
+    private lateinit var layout: LinearLayout
+    private val styledString = StyledString()
+
+    private lateinit var elementsProvider: ElementsProvider
+    private var lastTextView: TextView? = null
 
 
+    private fun flush(){
+        lastTextView?.text = styledString.toSpannable()
+        styledString.clear()
+        lastTextView = null
+    }
     override fun addText(text: String, vararg style: TextStyle) {
-        updateContext(requireContext())
-        val horizontalPadding = Dp(12).px.property
-        val verticalPadding = Dp(2).px.property
-        val textView = TextView(this.context)
-        textView.text = text
-        layout.addView(textView)
-
-        textView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
-
-        style.forEach {
-            when (it) {
-                TextStyle.BOLD -> textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
-                TextStyle.ITALIC -> textView.setTypeface(Typeface.DEFAULT, Typeface.ITALIC)
-                TextStyle.BOLD_ITALIC -> textView.setTypeface(
-                    Typeface.DEFAULT,
-                    Typeface.BOLD_ITALIC
-                )
-                TextStyle.NORMAL -> textView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
-                TextStyle.SMALL -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.5f)
-                TextStyle.MEDIUM -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 19.5f)
-                TextStyle.HUGE -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22.5f)
-                TextStyle.SMALL_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 23.5f)
-                TextStyle.MEDIUM_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25.5f)
-                TextStyle.HUGE_HEADER -> textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 28.5f)
-                TextStyle.STRIKETHROUGH -> TODO("add strikethrough support :moyai:")
-            }
+        if(lastTextView == null) {
+            val horizontalPadding = Dp(12).px.property
+            val verticalPadding = Dp(2).px.property
+            val textView = TextView(this.context)
+            textView.text = SpannableString("")
+            layout.addView(textView)
+            textView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.5f)
+            lastTextView = textView
         }
 
-        textView.layoutParams = TableRow.LayoutParams().apply {
-            width = Dp(10).px.property
-            weight = 1f
-        }
+        styledString.add("$text\n", *style)
 
-        textView.setTextIsSelectable(true)
+
+        lastTextView!!.setTextIsSelectable(true)
     }
 
 
@@ -115,12 +108,13 @@ class DocsPageFragment : Fragment(), PageBuilder {
         scrollView.scrollBarSize = Dp(7).px.property
         scrollView.overScrollMode = 2
         scrollView.addView(textView)
-        tableLayout.addView(scrollView)
+        layout.addView(scrollView)
+        flush()
     }
 
     override fun row() {
-        layout = TableRow(context)
-        tableLayout.addView(layout)
+
+
     }
 
     @SuppressLint("InflateParams")
@@ -129,10 +123,10 @@ class DocsPageFragment : Fragment(), PageBuilder {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        updateContext(requireContext())
         val view = inflater.inflate(R.layout.docs_fragment, null)
-        tableLayout = view.findViewById(R.id.docs_fragment_linear_layout)
+        layout = view.findViewById(R.id.docs_fragment_linear_layout)
         elementsProvider = MarkdownElementsProvider()
-
         elementsProvider.parse(markdown)
         row()
 
@@ -141,6 +135,7 @@ class DocsPageFragment : Fragment(), PageBuilder {
             if (it.onNextRow)
                 row()
         }
+        flush()
         return view
     }
 }
